@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+  </head>
+  <body>
+    <%- include('navbar') %> <% if (locals.user) {%> <% if (user.role !==
+    'member') {%>
+    <p>
+      Only members can view who wrote each message, enroll
+      <a href="/member-enrollment">here</a>
+    </p>
+    <% } %>
+    <h1>Messages</h1>
+    <% messages.map((message) => { %>
+    <div>
+      <h1><%= message.title %></h1>
+      <% if (user.role === 'member') {%>
+      <p><%= message.username %></p>
+      <% } %>
+      <p><%= message.message_content %></p>
+      <p><%= message.timestamp %></p>
+    </div>
+    <% }) %> <% } %>
+  </body>
+</html>
