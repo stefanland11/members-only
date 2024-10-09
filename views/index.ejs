@@ -2,26 +2,67 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title></title>
+    <title>Messages</title>
+    <style>
+      /* Initially hide the form */
+      #messageForm {
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <%- include('navbar') %> <% if (locals.user) {%> <% if (user.role !==
-    'member') {%>
+    <%- include('navbar') %> <% if (locals.user) { %> <% if (user.role !==
+    'member' && user.role !== 'admin') { %>
     <p>
-      Only members can view who wrote each message, enroll
+      Only members can view who wrote each message. Enroll
       <a href="/member-enrollment">here</a>
     </p>
+    <% } else { %> <% if(user.role !== 'admin') { %>
+    <div><a href="/admin-enrollment">Request admin privileges</a></div>
     <% } %>
+    <button id="createMessageButton">Create Message</button>
+    <div id="messageForm">
+      <form action="/create-message" method="POST">
+        <label for="title">Title:</label>
+        <input id="title" name="title" placeholder="Title" type="text" />
+        <label for="message">Message:</label>
+        <input id="message" name="message" placeholder="Message" type="text" />
+        <button type="submit">Post</button>
+      </form>
+    </div>
+    <% } %>
+
     <h1>Messages</h1>
+    <p><%= errorMessage %></p>
+    <p><%= successMessage %></p>
+
     <% messages.map((message) => { %>
     <div>
       <h1><%= message.title %></h1>
-      <% if (user.role === 'member') {%>
+      <% if (user.role === 'member' || user.role === 'admin') { %>
       <p><%= message.username %></p>
       <% } %>
       <p><%= message.message_content %></p>
       <p><%= message.timestamp %></p>
+      <% if (user.role === 'admin') { %>
+        <form action="/delete-message/<%= message.id %>/" method="post" onsubmit="return confirm('Are you sure you want to delete this message?');">
+          <button type="submit">Delete Message</button>
+        </form>
+      <% } %>
     </div>
     <% }) %> <% } %>
+
+    <script>
+      document
+        .getElementById("createMessageButton")
+        .addEventListener("click", function () {
+          var form = document.getElementById("messageForm");
+          if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "block";
+          } else {
+            form.style.display = "none";
+          }
+        });
+    </script>
   </body>
 </html>

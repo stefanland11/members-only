@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const flash = require('connect-flash');
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
@@ -11,9 +12,12 @@ const formsRouter = require("./routes/formsRouter");
 const app = express();
 app.set("view engine", "ejs");
 
-app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
-app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
+app.use(flash());
+app.use(passport.session());
+
 
 app.post(
   "/log-in",
